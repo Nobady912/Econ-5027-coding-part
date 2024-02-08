@@ -52,7 +52,7 @@ colnames(Q2_matrix) <- c('Y_i', 'X_i1', 'X_i2')
 print("E[Yi | X_i1 = 0 , X_i2 = 1] = 0.29*0.1")
 
 #E[Yi | X_i1 = 0 , X_i2 = 2]
-cat("E[Yi | X_i1 = 0 , X_i2 = 2] =", (-0.35+0.33)*(0.5))
+cat("E[Yi | X_i1 = 0 , X_i2 = 2] =", (-0.35+0.33)*(0.2))
 
 #E[Yi | X_i1 = 0 , X_i2 = 3]
 cat("E[Yi | X_i1 = 0 , X_i2 = 3] =", (-0.32 - 0.04)*(0.2))
@@ -97,91 +97,132 @@ dev.off()
   #vector of means
   mu <- c( 1.1141,-0.6768,3.3521)
   
+  #the c
+  c <- c(seq(from = -1, to =1, by = 0.1))
+  
   #all the part in the OLS equation
   a <- 0.8
   beta_hat_one <- 0
   beta_hat_two <- 0
   beta_hat_three <- 0.1
   
+  #nest loop r
+  
   #Rround
   R <- 1000
 #######################################################################################
 #Q3-A-1
+  
+# Parameters
+n_values <- c(100, 250, 500, 1000)
+c_values <- seq(from = -1, to = 1, by = 0.1)
+R <- 1000
+beta_true <- c(0.8, 0, 0, 0.1)  # True coefficients
 
-  #Set the moving part 
-  n_1 <- 100
-  e_1<- rnorm(n_1, mean = 0, sd = 1)
+# Initialize a matrix to store the proportions of rejections
+proportion_reject <- matrix(0, nrow = length(n_values), ncol = length(c_values))
+rownames(proportion_reject) <- n_values
 
-  #generate the data
-  for(i in 1:100){
-    x_1 <- mvrnorm(n_1, mu,Evil_variance_matrix)
+# Run simulations
+for (n_idx in 1:length(n_values)) {
+  n <- n_values[n_idx]
+  
+  for (c_idx in 1:length(c_values)) {
+    c <- c_values[c_idx]
+    rejections <- 0
     
-    y_1 <- a + 
-  }
-  
-  
-  # set matrix for storage, 1000 obs in test set
-  pred <- matrix(rep(NA,144),48,3)
-  # loop
-  for(i in 1:48){
-    tmp0 <- 1970
-    tmp1 <- n.end+(i-1)*1/4
-    tmp <- window(rgdp.gr,tmp0,tmp1)
-    pred[i,1] <- window(rgdp.gr,tmp1+1/4,tmp1+1/4) # actual
-    # compute forecasts
-    pred[i,2] <- forecast(Arima(tmp,order=c(1,0,0)),h=1)$mean # AR(1)
-    pred[i,3] <- forecast(Arima(tmp,order=c(0,0,1)),h=1)$mean # MA(1)
-  }
-
-  
-  #calcaute the y!
-  y_1 <- a + x_1
-  
-  
-
-#######################################################################################
-  
-  
-for the first samples zie
-cosndier the n = 100 
-mnr nrom functi0n 
-we will createt he r = 1000 different drawas from the mutivariance normal,w ewill 100 data set, fror every 100 data set we
-will go test 20 nonal-hypothesis, at the confidence level of 0.05
-
-c <- c(seq(from = -1, to =1, by = 0.1))
-ou will find the 
-put it the 100 sample sence into the sampel set, y
-
-for loop proceture, whenever you refgerence the simple size, when you giggther order when you are doing forh t esample, you can put the 
-
-if we define the vetctor n = c(100, 250, 1000)
-
-
-
-
-
-
-## For the question 3
-
-N c(100, 250, 1000)
-for(: n for N): 
-  
+    for (i in 1:R) {
+      # Simulate the data as in previous code ...
+      # Calculate residuals, t-value, and p-value as in previous code ...
+      
+      # Record if the null is rejected
+      if (p_value < 0.05) {
+        rejections <- rejections + 1
+      }
+    }
     
+    # Store the proportion of rejections
+    proportion_reject[n_idx, c_idx] <- rejections / R
+  }
+}
+
+# Plot the power curves using R's base graphics
+colors <- rainbow(length(n_values))
+plot(c_values, proportion_reject[1,], type = "l", col = colors[1], ylim = c(0, 1),
+     xlab = "Value of c", ylab = "Proportion of Null Rejections",
+     main = "Power Curves for Different Sample Sizes")
+for (i in 2:length(n_values)) {
+  lines(c_values, proportion_reject[i,], col = colors[i])
+}
+legend("topright", legend = as.character(n_values), col = colors, lty = 1)
+
+
+    
+    #####
+
+# Parameters
+n_values <- c(100, 250, 500, 1000)
+c_values <- seq(from = -1, to = 1, by = 0.1)
+R <- 1000
+alpha <- 0.05
+beta_true <- c(0.8, 0, 0, 0.1)  # True coefficients
+
+# Placeholder for results
+results <- matrix(0, nrow = length(c_values), ncol = length(n_values))
+
+# Simulations
+for (n_idx in seq_along(n_values)) {
+  n <- n_values[n_idx]
+  rejections <- rep(0, length(c_values))
   
-n for N, that is sourt if you refer to the vecto if will 
+  for (r in 1:R) {
+    x <- mvrnorm(n, mu = mu, Sigma = Evil_variance_matrix)
+    x <- cbind(rep(1, n), x)  # Add intercept
+    e <- rnorm(n, mean = 0, sd = 1)  # Error term
+    y <- x %*% beta_true + e  # Response variable
+    
+    # OLS estimation
+    fit <- lm(y ~ x - 1)  # -1 to exclude automatic intercept
+    beta_hat <- coef(fit)
+    se <- sqrt(diag(vcov(fit)))
+    
+    # Hypothesis tests for each c
+    for (c_idx in seq_along(c_values)) {
+      c <- c_values[c_idx]
+      t_stat <- (beta_hat[3] - c) / se[3]
+      p_val <- 2 * (1 - pt(abs(t_stat), df = n - length(beta_hat)))
+      if (p_val < alpha) {
+        rejections[c_idx] <- rejections[c_idx] + 1
+      }
+    }
+  }
+  # Store the proportion of rejections
+  results[, n_idx] <- rejections / R
+}
 
+# Plotting
+# Colors
+dw_blue <- "#003b6f"  # Doctor Who blue
+cr_red <- "#e91c25"   # Carlton red
+ua_green <- "#007c41"  #ualberta green 
+ua_gold <- "#ffdb05"  #ualberta gold
+colors <- c(dw_blue, cr_red, ua_green ,ua_gold)  # Assign colors to sample sizes
 
+# Base R Plotting with specified colors
+plot(NULL, xlim = c(min(c_values), max(c_values)), ylim = c(0, 1),
+     xlab = "Value of c", ylab = "Proportion of Rejections",
+     main = "Power Curves for Different Sample Sizes")
+for (n_idx in seq_along(n_values)) {
+  lines(c_values, results[, n_idx], type = "l", lwd = 2, col = colors[n_idx])
+}
+legend("bottomright", legend = paste("n =", n_values), col = colors, lty = 1, cex = 0.8)
 
-
-for R,
-#######################################################################################
-3-c
-(i) the T test
-(ii)the F test
-
-
-#######################################################################################
-
-
-
+    
+#doctor who blue 
+dw_blue = "#003b6f"
+#Carlton red
+cr_red = "#e91c25"
+    
+    
+    
 
