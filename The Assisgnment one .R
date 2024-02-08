@@ -22,10 +22,11 @@ setwd("~/Documents/GitHub/Econ-5027-coding-part")
 library("MASS")
 library("ggplot2")
 
-#doctor who blue 
-dw_blue = "#003b6f"
-#Carlton red
-cr_red = "#e91c25"
+# Colors
+dw_blue <- "#003b6f"  # Doctor Who blue
+cr_red <- "#e91c25"   # Carlton red
+ua_green <- "#007c41"  #ualberta green 
+ua_gold <- "#ffdb05"  #ualberta gold
 #################################################################################################################
 #Q2
 ######################################################################################
@@ -83,146 +84,116 @@ cat("E[Yi] =",mean_y_i)
 cat( "E[E[Yi | X_i1 = x1 , X_i2 = x2]] =", mean(evil))
 
 #######################################################################################
-#Q3
+#Q3-A
 
-#Cleaning the environment
+# Assuming you have the MASS package installed and loaded for mvrnorm
+library(MASS)
+
+# Clean the environment
 rm(list = ls())
-dev.off()
 
-# set the enviroment(things that will not moving about)
-  #variance matrix
-  Evil_variance_matrix <- matrix(c( 1.0964, -0.5313, -0.5730, 
-                                  -0.5313, 0.9381, -0.4184,
-                                  -0.5730, -0.4184, 1.0228), nrow = 3, ncol = 3, byrow = TRUE)
-  #vector of means
-  mu <- c( 1.1141,-0.6768,3.3521)
-  
-  #the c
-  c <- c(seq(from = -1, to =1, by = 0.1))
-  
-  #all the part in the OLS equation
-  a <- 0.8
-  beta_hat_one <- 0
-  beta_hat_two <- 0
-  beta_hat_three <- 0.1
-  
-  #nest loop r
-  
-  #Rround
-  R <- 1000
-#######################################################################################
-#Q3-A-1
-  
-# Parameters
-n_values <- c(100, 250, 500, 1000)
-c_values <- seq(from = -1, to = 1, by = 0.1)
+# Set the static components of the environment
+Evil_variance_matrix <- matrix(c(1.0964, -0.5313, -0.5730, 
+                                 -0.5313, 0.9381, -0.4184,
+                                 -0.5730, -0.4184, 1.0228), nrow = 3, ncol = 3, byrow = TRUE)
+
+mu <- c(1.1141, -0.6768, 3.3521)
+
+# c sequence
+c_value <- seq(from = -1, to = 1, by = 0.1)
+
+# Number of simulation rounds
 R <- 1000
-beta_true <- c(0.8, 0, 0, 0.1)  # True coefficients
-
-# Initialize a matrix to store the proportions of rejections
-proportion_reject <- matrix(0, nrow = length(n_values), ncol = length(c_values))
-rownames(proportion_reject) <- n_values
-
-# Run simulations
-for (n_idx in 1:length(n_values)) {
-  n <- n_values[n_idx]
-  
-  for (c_idx in 1:length(c_values)) {
-    c <- c_values[c_idx]
-    rejections <- 0
-    
-    for (i in 1:R) {
-      # Simulate the data as in previous code ...
-      # Calculate residuals, t-value, and p-value as in previous code ...
-      
-      # Record if the null is rejected
-      if (p_value < 0.05) {
-        rejections <- rejections + 1
-      }
-    }
-    
-    # Store the proportion of rejections
-    proportion_reject[n_idx, c_idx] <- rejections / R
-  }
-}
-
-# Plot the power curves using R's base graphics
-colors <- rainbow(length(n_values))
-plot(c_values, proportion_reject[1,], type = "l", col = colors[1], ylim = c(0, 1),
-     xlab = "Value of c", ylab = "Proportion of Null Rejections",
-     main = "Power Curves for Different Sample Sizes")
-for (i in 2:length(n_values)) {
-  lines(c_values, proportion_reject[i,], col = colors[i])
-}
-legend("topright", legend = as.character(n_values), col = colors, lty = 1)
-
-
-    
-    #####
 
 # Parameters
-n_values <- c(100, 250, 500, 1000)
-c_values <- seq(from = -1, to = 1, by = 0.1)
-R <- 1000
+n_value <- c(100, 250, 500, 1000)
+beta_true <- c(-0.8, 0, 0, 0.1)  
 alpha <- 0.05
-beta_true <- c(0.8, 0, 0, 0.1)  # True coefficients
 
-# Placeholder for results
-results <- matrix(0, nrow = length(c_values), ncol = length(n_values))
+# Pred matrix
+proportion_reject <- matrix(0, nrow = length(n_value), ncol = length(c_value))
+rownames(proportion_reject) <- n_value
 
-# Simulations
-for (n_idx in seq_along(n_values)) {
-  n <- n_values[n_idx]
-  rejections <- rep(0, length(c_values))
+# the result matrix
+results <- matrix(0, nrow = length(c_value), ncol = length(n_value))
+
+# Sim time!
+for (i in 1:length(n_value)) {
   
-  for (r in 1:R) {
+  #set the n value in the data generate process
+  n <- n_value[i]
+  #track the null hypothesis be reject
+  rejections <- rep(0, length(c_value))
+  
+  #this loop run 1000 times with current value of n
+  for (j in 1:R) {
     x <- mvrnorm(n, mu = mu, Sigma = Evil_variance_matrix)
-    x <- cbind(rep(1, n), x)  # Add intercept
-    e <- rnorm(n, mean = 0, sd = 1)  # Error term
-    y <- x %*% beta_true + e  # Response variable
+    # Add intercept (we now turn the x from 3x3 matrix to 3x4 matrix)
+    x <- cbind(rep(1, n), x)  
+    # Error term (standard distributed)
+    e <- rnorm(n, mean = 0, sd = 1)
+    #now its the time for the calculate the y!
+    y <- x %*% beta_true + e
     
     # OLS estimation
-    fit <- lm(y ~ x - 1)  # -1 to exclude automatic intercept
-    beta_hat <- coef(fit)
-    se <- sqrt(diag(vcov(fit)))
+    beta_hat <- solve(t(x) %*% x) %*% (t(x) %*% y)
+    eps_hat <- y - x %*% beta_hat
+    #the degree of freedom 
+    dof <- n - length(beta_hat)
+    #残差 the mu
+    sigma_hat_sq <- (1 / dof) * sum(eps_hat^2)
+    #estimate of the 
+    v_beta_hat <- solve(t(x) %*% x) * sigma_hat_sq
+    # standard error time!
+    se <- sqrt(diag(v_beta_hat))
     
-    # Hypothesis tests for each c
-    for (c_idx in seq_along(c_values)) {
-      c <- c_values[c_idx]
-      t_stat <- (beta_hat[3] - c) / se[3]
-      p_val <- 2 * (1 - pt(abs(t_stat), df = n - length(beta_hat)))
+    # The T-test
+    for (k in 1:length(c_value)) {
+      c_evil <- c_value[k]
+      t_stat <- (beta_hat[3] - c_evil) / se[3]
+      p_val <- 2 * (1 - pt(abs(t_stat), df = dof))
       if (p_val < alpha) {
-        rejections[c_idx] <- rejections[c_idx] + 1
+        rejections[k] <- rejections[k] + 1
       }
     }
   }
+  
   # Store the proportion of rejections
-  results[, n_idx] <- rejections / R
+  results[, i] <- rejections / R
 }
 
-# Plotting
-# Colors
+
+# Define custom colors
 dw_blue <- "#003b6f"  # Doctor Who blue
 cr_red <- "#e91c25"   # Carlton red
-ua_green <- "#007c41"  #ualberta green 
-ua_gold <- "#ffdb05"  #ualberta gold
-colors <- c(dw_blue, cr_red, ua_green ,ua_gold)  # Assign colors to sample sizes
+ua_green <- "#007c41"  # UAlberta green
+ua_gold <- "#ffdb05"  # UAlberta gold
+colors <- c(dw_blue, cr_red, ua_green, ua_gold)  # Assign colors to sample sizes
 
 # Base R Plotting with specified colors
-plot(NULL, xlim = c(min(c_values), max(c_values)), ylim = c(0, 1),
+plot(NULL, xlim = c(min(c_value), max(c_value)), ylim = c(0, 1),
      xlab = "Value of c", ylab = "Proportion of Rejections",
-     main = "Power Curves for Different Sample Sizes")
-for (n_idx in seq_along(n_values)) {
-  lines(c_values, results[, n_idx], type = "l", lwd = 2, col = colors[n_idx])
+     main = "Power Curves for Different Sample Sizes",
+     xaxt = "n", yaxt = "n", bty = "n", xaxs = "i", yaxs = "i")
+axis(1, at = seq(min(c_value), max(c_value), by = 0.2), las = 1, cex.axis = 0.8)
+axis(2, las = 1, cex.axis = 0.8)
+
+# Plotting lines using a for loop in your style
+for (i in 1:length(n_value)) {
+  lines(c_value, results[, i], type = "l", lwd = 2, col = colors[i], lty = 1)
 }
-legend("bottomright", legend = paste("n =", n_values), col = colors, lty = 1, cex = 0.8)
 
-    
-#doctor who blue 
-dw_blue = "#003b6f"
-#Carlton red
-cr_red = "#e91c25"
-    
-    
-    
+# Dynamic legend based on the number of n_values
+legendText <- paste("n =", n_value)
 
+#legend time 
+legend("top", legend = paste("n =", n_value), col = colors[1:length(n_value)], lty = 1, cex = 0.8)
+title(main = "Power Curves for Different Sample Sizes", cex.main = 1.2)
+title(xlab = "Value of c", cex.lab = 1)
+title(ylab = "Proportion of Rejections", cex.lab = 1)
+
+
+  
+  
+  
+  

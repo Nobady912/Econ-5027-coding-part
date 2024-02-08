@@ -28,6 +28,9 @@ beta_true <- c(0.3, 1.2, -0.7, 0.4)
 R <- 1000
 
 
+
+
+
 #PREALLOCATE MATRIX TO STORE RESULTS
 storemat <- matrix(NA, nrow = R, ncol = length(beta_true))
 
@@ -55,6 +58,9 @@ plot(storemat[,2])
 
 evil <-data.frame(storemat)
 lm(evil)
+
+rm(list=ls())
+
 
 
 
