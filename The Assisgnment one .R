@@ -27,6 +27,8 @@ ua_gold <- "#ffdb05"  #ualberta gold
 #clean the environment for the the assignment. 
 rm(list = ls())
 
+set.seed(1234567)
+
 #set the variance matrix
 evil_variance_matrix <- matrix(c(1.0964, -0.5313, -0.5730, 
                                  -0.5313, 0.9381, -0.4184,
@@ -39,7 +41,7 @@ mu <- c(1.1141, -0.6768, 3.3521)
 c_value <- seq(from = -1, to = 1, by = 0.1)
 
 # Number of simulation rounds
-R <- 10000
+R <- 1000
 
 # Parameters 
 # the n is for the data generate process within the loop
