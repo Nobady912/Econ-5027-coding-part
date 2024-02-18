@@ -146,11 +146,11 @@ for (i in 1:length(n_value)){
     rm(list = ls())
     set.seed(1234567)
     
-#set the variance matrix, we do not have the x1 in the model so we need to remove something from the matrix 
+    #set the variance matrix, we do not have the x1 in the model so we need to remove something from the matrix 
     evil_variance_matrix <- matrix(c(0.9381, -0.4184,
-                                      -0.4184, 1.0228), nrow = 2, ncol = 2, byrow = TRUE)
-
-#set up the mu (for question 3-b we do not have the x1)
+                                     -0.4184, 1.0228), nrow = 2, ncol = 2, byrow = TRUE)
+    
+    #set up the mu (for question 3-b we do not have the x1)
     mu <- c(-0.6768, 3.3521)
     
     # c sequence (from -1 to 1 by 0.1)
@@ -186,7 +186,7 @@ for (i in 1:length(n_value)){
       for (j in 1:R) {
         x <- mvrnorm(n, mu = mu, Sigma = evil_variance_matrix) # its should be "Sigma" not "sigma"
         # Add intercept (we now turn the x from 3x3 matrix to 3x4 matrix)
-       x <- cbind(rep(1, n), x)
+        x <- cbind(rep(1, n), x)
         # e need to be processed within the loop 
         e <- rnorm(n, mean = 0, sd = 1)  #normal distribution 
         #now its the time for the calculate the y!
@@ -246,24 +246,19 @@ for (i in 1:length(n_value)){
     lines(c_value, Final_matrix[4, ], col = colors[4], lwd = 2)
     legend("bottomleft", legend = n_labels, col = colors, lty = 1, lwd = 2)
     
-    
     #########################################################
-#Q3-C############################################################
-    
-    #generate the data 
-  
-    #clean the environment for the the assignment. 
+#Q3-C-i############################################################
+
+    #clean the enviroment and set seed for compare the answer
     rm(list = ls())
     set.seed(1234567)
     
-    #set the variance matrix
-    evil_variance_matrix <- matrix(c( 0.9381), nrow = 1, ncol = 1, byrow = TRUE)
+    #set the variance matrix, we do not have the x1 in the model so we need to remove something from the matrix 
+    evil_variance_matrix <- matrix(c(0.9381, -0.4184,
+                                     -0.4184, 1.0228), nrow = 2, ncol = 2, byrow = TRUE)
     
-    #set up the mu
-    mu <- c(-0.6768)
-    
-    # c sequence (from -1 to 1 by 0.1)
-    c_value <- seq(from = -1, to = 1, by = 0.1)
+    #set up the mu (for question 3-b we do not have the x1)
+    mu <- c(-0.6768, 3.3521)
     
     # Number of simulation rounds
     R <- 1000
@@ -274,26 +269,26 @@ for (i in 1:length(n_value)){
     n_value <- c(100, 250, 500, 1000)
     
     #set up the beta_ture
-    beta_true <- c(-0.8,0) 
+    beta_true <- c(-0.8, 0, 0.1) 
     
     #the t-test with 0.05 degree of freedom (do not change to a you will lost it)
     alpha <- 0.05
     
     #final_matrix
-    Final_matrix <- matrix(0,ncol = length(c_value), nrow = length(n_value))
+    Final_matrix_3ci <- matrix(0,ncol = 1, nrow = length(n_value))
     
     #the simulation time
     for (i in 1:length(n_value)){
       #rest the n
       n <- n_value[i]
       #reset the TF matrix
-      TF_matrix <- matrix(NA, ncol=length(c_value), nrow = R)
+      TF_matrix <- matrix(NA, ncol=1, nrow = R)
+      
+      x <- mvrnorm(n, mu = mu, Sigma = evil_variance_matrix)
       
       #this loop run 1000 times with current value of n
       for (j in 1:R) {
-        
         x <- mvrnorm(n, mu = mu, Sigma = evil_variance_matrix) # its should be "Sigma" not "sigma"
-        
         # Add intercept (we now turn the x from 3x3 matrix to 3x4 matrix)
         x <- cbind(rep(1, n), x)
         # e need to be processed within the loop 
@@ -316,50 +311,119 @@ for (i in 1:length(n_value)){
         sd <- sqrt(diag_v_beta_hat)
         
         #the T- test time!
-        for (k in 1:length(c_value)) {
-          #T statistic for the beta3
-          t_st <- (beta_hat[2,] - c_value[k])/sd[2]
-          #T test P value 
-          t_p_value <- 1 - pt(abs(t_st), dof) #using the TA's note!
-          #the matrix time!
-          #count the p_value
-          TF_matrix[j, k] <- t_p_value < 0.05
-          #this things was crashed my mac for times。
-          #I spend 2 hours on this line a lone
-        }
+        #T statistic for the beta2
+        t_st <- (beta_hat[3,] -0)/sd[3]
+        #T test P value 
+        t_p_value <- 1 - pt(abs(t_st), dof) #using the TA's note!
+        #the matrix time!
+        #count the p_value
+        TF_matrix[j,] <- t_p_value < 0.05
+        #this things was crashed my mac for times。
+        #I spend 2 hours on this line a lone
       }
-      Final_matrix[i, ] <- colMeans(TF_matrix)
+      Final_matrix_3ci[i,] <- mean(TF_matrix)
       #and other hour on this line.
     }
     
     #change the row name of the matrix 
-    rownames(Final_matrix) <- c("n = 100", "n = 250", "n = 500", "n = 1000")
+    rownames(Final_matrix_3ci) <- c("n = 100", "n = 250", "n = 500", "n = 1000")
+  print(Final_matrix_3ci)
+    
+
+#Q3-C-ii#########################################################
+
+    
+    #set the variance matrix, we do not have the x1 in the model so we need to remove something from the matrix 
+    evil_variance_matrix <- matrix(c(0.9381 ), nrow = 1, ncol = 1, byrow = TRUE)
+    
+    #set up the mu (for question 3-b we do not have the x1)
+    mu <- c(-0.6768)
+    
+    # Number of simulation rounds
+    R <- 1000
+    
+    # Parameters 
+    # the n is for the data generate process within the loop
+    # the n_value of for the loop to keep going.
+    n_value <- c(100, 250, 500, 1000)
+    
+    #set up the beta_ture
+    beta_true <- c(-0.8, 0) 
+    
+    #the t-test with 0.05 degree of freedom (do not change to a you will lost it)
+    alpha <- 0.05
+    
+    #final_matrix
+    Final_matrix_3cii <- matrix(0,ncol = 1, nrow = length(n_value))
+    
+    #the simulation time
+    for (i in 1:length(n_value)){
+      #rest the n
+      n <- n_value[i]
+      #reset the TF matrix
+      TF_matrix <- matrix(NA, ncol=1, nrow = R)
+      
+      x <- mvrnorm(n, mu = mu, Sigma = evil_variance_matrix)
+      
+      #this loop run 1000 times with current value of n
+      for (j in 1:R) {
+        x <- mvrnorm(n, mu = mu, Sigma = evil_variance_matrix) # its should be "Sigma" not "sigma"
+        # Add intercept (we now turn the x from 3x3 matrix to 3x4 matrix)
+        x <- cbind(rep(1, n), x)
+        # e need to be processed within the loop 
+        e <- rnorm(n)  #normal distribution 
+        #now its the time for the calculate the y!
+        y <- x %*% beta_true + e
+        
+        # OLS estimation
+        beta_hat <- solve(t(x) %*% x) %*% (t(x) %*% y)
+        eps_hat <- y - x %*% beta_hat
+        
+        #the degree of freedom 
+        dof <- n - length(beta_hat)
+        #残差 the mu
+        sigma_hat_sq <- (1 / dof) * sum(eps_hat^2)
+        #estimate of the 
+        v_beta_hat <- solve(t(x) %*% x) * sigma_hat_sq
+        # standard error time!
+        diag_v_beta_hat <- diag(v_beta_hat)
+        sd <- sqrt(diag_v_beta_hat)
+        
+        #the T- test time!
+        #T statistic for the beta2
+        t_st <- (beta_hat[2,] - 0)/sd[2]
+        #T test P value 
+        t_p_value <- 1 - pt(abs(t_st), dof) #using the TA's note!
+        #the matrix time!
+        #count the p_value
+        TF_matrix[j,] <- t_p_value < 0.05
+        #this things was crashed my mac for times。
+        #I spend 2 hours on this line a lone
+      }
+      Final_matrix_3cii[i,] <- mean(TF_matrix)
+      #and other hour on this line.
+    }
+    
+    #change the row name of the matrix 
+    rownames(Final_matrix_3cii) <- c("n = 100", "n = 250", "n = 500", "n = 1000")
+    #print(Final_matrix_3ci)
+   # print(print(Final_matrix_3cii))
+######## ########    ########    ########    ########    ########       
+
     
     
-    # Assuming Final_matrix and c_value are already defined
-    
-    # Colors
-    dw_blue <- "#003b6f"  # Doctor Who blue
-    cr_red <- "#e91c25"   # Carlton red
-    ua_green <- "#007c41"  # ualberta green 
-    ua_gold <- "#ffdb05"  # ualberta gold
-    
-    # Prepare the data
-    n_labels <- c("n = 100", "n = 250", "n = 500", "n = 1000")
-    colors <- c(dw_blue, cr_red, ua_green, ua_gold)
-    
-    # Plotting
-    plot(c_value, Final_matrix[1, ], type = "l", col = colors[1], ylim = c(min(Final_matrix), max(Final_matrix)), xlab = "Value of c", ylab = "Proportion of Rejections", main = "3-c power Curves for different sample size", lwd = 2, xlim = c(-1, 1))
-    lines(c_value, Final_matrix[2, ], col = colors[2], lwd = 2)
-    lines(c_value, Final_matrix[3, ], col = colors[3], lwd = 2)
-    lines(c_value, Final_matrix[4, ], col = colors[4], lwd = 2)
-    legend("bottomleft", legend = n_labels, col = colors, lty = 1, lwd = 2)
-    
-#Q4###########################################################
-    
-    
-    
-    
-    
-    
+    #Q3-final
+    #The matrix of p reject i
+      Final_matrix_3ci
+    #The matrix of p reject ii
+      Final_matrix_3cii
+    #The matrix of P fail to reject i
+      fail_Final_matrix_3ci <- matrix(c(1-Final_matrix_3ci))
+      print(fail_Final_matrix_3ci)
+    #The matrix of P fail to reject ii 
+      fail_Final_matrix_3cii <- matrix(c(1-  Final_matrix_3cii))
+      print(fail_Final_matrix_3cii)
+      
+      
+    #Q3-c final answer 
     
