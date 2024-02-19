@@ -23,12 +23,10 @@ cr_red <- "#e91c25"   # Carlton red
 ua_green <- "#007c41"  #ualberta green 
 ua_gold <- "#ffdb05"  #ualberta gold
 #Q3-A##h0 = beta_2 = c versu h1 beta_2 not equal to c######################################################################################################
-#Q 3-A 
+
 #clean the environment for the the assignment. 
 rm(list = ls())
-
-set.seed(1234567)
-
+set.seed(101310927)
 #set the variance matrix
 evil_variance_matrix <- matrix(c(1.0964, -0.5313, -0.5730, 
                                  -0.5313, 0.9381, -0.4184,
@@ -142,16 +140,16 @@ for (i in 1:length(n_value)){
 ##############################################################
 
 #Q3-B########################################################
-    #clean the enviroment and set seed for compare the answer
+    #clean the environment for the the assignment. 
     rm(list = ls())
-    set.seed(1234567)
-    
-    #set the variance matrix, we do not have the x1 in the model so we need to remove something from the matrix 
-    evil_variance_matrix <- matrix(c(0.9381, -0.4184,
-                                     -0.4184, 1.0228), nrow = 2, ncol = 2, byrow = TRUE)
-    
-    #set up the mu (for question 3-b we do not have the x1)
-    mu <- c(-0.6768, 3.3521)
+    set.seed(101310927)
+    #set the variance matrix
+    evil_variance_matrix <- matrix(c(1.0964, -0.5313, -0.5730, 
+                                     -0.5313, 0.9381, -0.4184,
+                                     -0.5730, -0.4184, 1.0228), nrow = 3, ncol = 3, byrow = TRUE)
+
+    #set up the mu
+    mu <- c(1.1141, -0.6768, 3.3521)
     
     # c sequence (from -1 to 1 by 0.1)
     c_value <- seq(from = -1, to = 1, by = 0.1)
@@ -163,10 +161,7 @@ for (i in 1:length(n_value)){
     # the n is for the data generate process within the loop
     # the n_value of for the loop to keep going.
     n_value <- c(100, 250, 500, 1000)
-    
-    #set up the beta_ture
-    beta_true <- c(-0.8, 0, 0.1) 
-    
+
     #the t-test with 0.05 degree of freedom (do not change to a you will lost it)
     alpha <- 0.05
     
@@ -180,17 +175,33 @@ for (i in 1:length(n_value)){
       #reset the TF matrix
       TF_matrix <- matrix(NA, ncol=length(c_value), nrow = R)
       
-      x <- mvrnorm(n, mu = mu, Sigma = evil_variance_matrix)
-      
       #this loop run 1000 times with current value of n
       for (j in 1:R) {
-        x <- mvrnorm(n, mu = mu, Sigma = evil_variance_matrix) # its should be "Sigma" not "sigma"
-        # Add intercept (we now turn the x from 3x3 matrix to 3x4 matrix)
-        x <- cbind(rep(1, n), x)
+        
+        #take the section of the data from the DGP and to do the next set.
+        #The following code are specific for the model 0.4.
+        
+        simulated_data <- mvrnorm(n, mu, evil_variance_matrix)
+        #note: here the data does not have the intercept
+        # beta1 + beta 2 + beta 3
+        
+        #take the beta1, beta2 and beta3 out and repute them together. 
+        #and I can repose it for the rest of the question 3!
+        beta_one <- simulated_data[, 1]
+        beta_two <- simulated_data[, 2]
+        beta_three <- simulated_data[, 3]
+        
+        #the model 0.4 have intercept, beta_2 and beta_3
+        x <- cbind(rep(1, n), simulated_data[, 2], simulated_data[, 3])
+        
         # e need to be processed within the loop 
+        p <- 3
         e <- rnorm(n, mean = 0, sd = 1)  #normal distribution 
         #now its the time for the calculate the y!
-        y <- x %*% beta_true + e
+        beta_very_true <- c(-0.8, 0, 0.1)  # As a vector 
+        
+        
+        y <- x %*% beta_very_true + e
         
         # OLS estimation
         beta_hat <- solve(t(x) %*% x) %*% (t(x) %*% y)
@@ -251,7 +262,7 @@ for (i in 1:length(n_value)){
 
     #clean the enviroment and set seed for compare the answer
     rm(list = ls())
-    set.seed(1234567)
+    #set.seed(1234567)
     
     #set the variance matrix, we do not have the x1 in the model so we need to remove something from the matrix 
     evil_variance_matrix <- matrix(c(0.9381, -0.4184,
@@ -410,20 +421,23 @@ for (i in 1:length(n_value)){
    # print(print(Final_matrix_3cii))
 ######## ########    ########    ########    ########    ########       
 
-    
-    
+  
     #Q3-final
     #The matrix of p reject i
-      Final_matrix_3ci
+      #Final_matrix_3ci
     #The matrix of p reject ii
-      Final_matrix_3cii
+     # Final_matrix_3cii
     #The matrix of P fail to reject i
       fail_Final_matrix_3ci <- matrix(c(1-Final_matrix_3ci))
-      print(fail_Final_matrix_3ci)
+      #print(fail_Final_matrix_3ci)
     #The matrix of P fail to reject ii 
       fail_Final_matrix_3cii <- matrix(c(1-  Final_matrix_3cii))
-      print(fail_Final_matrix_3cii)
       
       
-    #Q3-c final answer 
+    #Q3-c final matix
+      Q3_final_matrix <- matrix(0, nrow= 4, ncol = 1)
+      for(i in 1:4){
+         Q3_final_matrix[i, ] <- Final_matrix_3cii[i,]/fail_Final_matrix_3ci[i,]
+      }
+      print(Q3_final_matrix)
     
