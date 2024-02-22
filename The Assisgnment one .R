@@ -23,9 +23,8 @@ library("ggplot2")
 
 ##Q2-D########################
 
-#loding the data
 
-options(digits=5)
+#loding the data
 Q2D_matrix <- matrix(c(
   0.23, -0.39, -0.03, 0.29, 0.33, -0.37, -0.32, -0.04, -0.51, -0.96,  # Yi
   1, 0, 1, 0, 0, 1, 0, 0, 1, 1,                                       # Xi1
@@ -54,7 +53,7 @@ Xi2_values <- c(1, 2, 3)
 #The data frame
 Q2D_data_frame <- expand.grid(Xi1 = Xi1_values, Xi2 = Xi2_values)
 
-# Calculate the conditional expectations for the given combinations
+# Calculate the conditional expectations everything
 conditional_expectations <- c(
   beta_hat[1] + beta_hat[2] * 0 + beta_hat[3] * 1,
   beta_hat[1] + beta_hat[2] * 0 + beta_hat[3] * 2,
@@ -72,10 +71,12 @@ conditional_matrix <- cbind(
 )
 
 # Print the matrix with 5 decimal places
-print(conditional_matrix )
+print(conditional_matrix)
+
 
 #e) 
 #it the same 
+
 
 ##############################
 
