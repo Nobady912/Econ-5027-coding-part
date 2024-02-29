@@ -19,6 +19,7 @@ setwd("~/Documents/GitHub/Econ-5027-coding-part")
 #I just copy it around
 library("MASS")
 library("ggplot2")
+library("sandwich")
 ##############################
 
 ##Q2-D########################
@@ -463,17 +464,101 @@ for (i in 1:length(n_value)){
     
     
 ##################
+#Q4
+
+    
+#4-a-i
+    # Generating the text as requested by the user in a code block format
+    
+    text = """
+By definition, if the error term ε_i and the explanatory variable x_ij are independent, the expected value of their product is zero: E[ε_i x_ij] = 0. If δ = 0, it implies that there is no direct dependence or correlation between x_i4 and ε_i, maintaining the assumption of independence between the error terms and the explanatory variables. Therefore, under the assumption that δ = 0, x_i4 and ε_i are independent, and thus E[ε_i x_ij] = 0 for all i, j.
+
+To show that this holds if and only if δ = 0, we would also argue that if δ ≠ 0, then there is a dependence between x_i4 and ε_i, violating the independence assumption and thus E[ε_i x_i4] would not equal zero.
+"""
+    
+    
+#4-a-ii
+    
+
+
+#begining by simulating data for a multivarite regression model with
+#homoscedastic error
+    
+#sample size
+n <- 10000
+B <- 999
+
+#vector of mean
+mu <- c(-0.22, 0.41, -1.56, 1.13, 0.82, 0)
+
+#covariance matrix
+Sigma  <- matrix(c(1.00,  0.00,  0.00,   0.250, -0.250, 
+                   0.00,  1.00,  0.00,  -0.125,  0.125,
+                   0.00,  0.00,  1.00,   0.500,  0.000,
+                   0.25, -0.125, 0.500,  1.000, -0.125,
+                  -0.25,  0.125, 0.000, -0.125,  1.000, 
+                   ), 
+                nrow = 6, 
+                 ncol = 6, 
+                 byrow = TRUE)
+    
+#Draw data
+x <- mvrnorm(n, mu, Sigma = Sigma)
+
+#add a colume vector ones to x for the "constant"
+x <- cbind(rep(1:n), x)
   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+#True parameter vector 
+beta_true <- c(-0.24, 0.18, 1.17, -1.54, 0.72)
+
+#compute the beta_hat
+beta_hat <- solve(t(x) %*% x) %*% (t(x) %*% y)
+
+#create the matrix to hold the beta_value
+b_hats <- matrix(nrow = n2, ncol = 4)
+
+#matrix for the boostrap sample
+boot_b1s <- matrix(nrow = B, ncol = 1)
+
+
+#
+
+# Removing this loop because not needed here
+# making a for loop to generate multiple Beta samples
+#for(k in 1:n2){
+
+# generating the x values and error 
+d4 <- mvrnorm(n2,
+              mu = mu2,
+              Sigma = sigma2)
+
+# Setting my data to include the ones column
+dat4 <- cbind(c2,d4)
+
+# Creating a nx1 matrix to hold the values of y
+y2 <- matrix(nrow = nrow(dat4), ncol = 1)
+
+
+
+# generating values of y based on the given betas, 
+# and generated Xi's and errors
+for( i in 1:nrow(dat4)){
+  y2[i,1] <- true_betas[1]+ true_betas[2]*d4[i,1]+
+    true_betas[3]*d4[i,2]+true_betas[4]*d4[i,3]+
+    d4[i,4]
+}
+
+# Removing the error column for beta evaluation
+data2 <- dat4[,1:(ncol(dat4)-1)]
+
+# Adding the found beta values to the object "beta_hats"
+b.2 <-as.vector(solve(t(as.matrix(data2))%*%as.matrix(data2))%*%
+                  t(as.matrix(data2))%*%y2)
+
+
+boot_b1s <- ryans_boot(d4, B, true_betas)
+
+
     
     
     
