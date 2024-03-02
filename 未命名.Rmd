@@ -1,0 +1,72 @@
+---
+title: "Untitled"
+author: "Tie Ma"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+
+```
+
+
+Q4-A-I
+
+
+
+\[
+\text{Use the law of iterated expectations}
+\]
+
+
+\begin{align*} 
+E[\epsilon_i x_i] &= E[E[\epsilon_i x_i | x_i]] \\
+&= E[E[\epsilon_i | x_i] \cdot x_i] \\
+&= E[\delta \cdot x_i] \\
+\end{align*}
+
+
+If \( \delta = 0 \), then: 
+
+
+\begin{align*}
+E[\delta \cdot x_i] &= E[0 \cdot x_i] \\
+                    &= 0
+\end{align*}
+
+
+
+$\therefore$ if \( E[\epsilon_i x_i] = 0 \), then \( E[\delta \cdot x_i] = 0 \). For the exception to be zero.
+
+$\therefore$ we can concluded that \[ E[\epsilon_i x_i] = 0 \quad \text{if and only if} \quad \delta = 0\]
+
+
+
+
+\subsection*{(a) (ii) Argue that \( E[\epsilon_i x_i] \neq 0 \) implies that \( E[\epsilon_i | x_i] \neq 0 \). Conclude that \( E[\epsilon_i | x_i] \neq 0 \) if \( \delta \neq 0 \) in the DGP above.}
+
+
+Q4-A-ii
+
+We start with the law of iterated expectations.
+
+If \( \delta \neq 0 \), then:
+
+
+\begin{align*}
+E[\epsilon_i x_i] &= E_x[E[\epsilon_i x_i | x_i]] \\
+                  &= E[E[\epsilon_i | x_i] \cdot x_i] \\
+                  &= E[\delta \cdot x_i]
+\end{align*}
+
+Since \( \delta \neq 0 \), and assuming that \( x_i \) has non-zero values, then:
+
+\[
+E[\epsilon_i x_i] \neq 0
+\]
+
+Therefore, \( E[\epsilon_i | x_i] \) is not zero if \( \delta \) is not zero, menans that:
+
+\[
+E[\epsilon_i | x_i] \neq 0
+\]

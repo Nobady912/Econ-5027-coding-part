@@ -12,8 +12,14 @@ output:
 #ECON 5027
 #Assignment one 
 
+```{r eval=FALSE, include=FALSE}
+#just to make sure I have correct verson of file 
+#202402115: Finished polish
 
-```{r, include=FALSE}
+```
+
+
+```{r include=FALSE}
 #################################################################################################################
 #Tie Ma
 #student number: 101316917
@@ -38,8 +44,7 @@ library("sandwich")
 ```
 
 Q2-D
-```{r Q2-D}
-set.seed(10086)
+```{r Q2-D-1, echo=FALSE}
 #loding the data
 Q2D_matrix <- matrix(c(
   0.23, -0.39, -0.03, 0.29, 0.33, -0.37, -0.32, -0.04, -0.51, -0.96,  # Yi
@@ -56,19 +61,27 @@ y <- Q2D_matrix[, 1]
 
 #time for the beta_hat
 beta_hat <- solve(t(x) %*% x) %*% (t(x) %*% y)
-e <- rnorm(6, mean = 0, sd = 1) 
 
 #constructed the model
 Q2D_model <- function(x1, x2, beta_hat) {
-  beta_hat[1] + beta_hat[2] * x1 + beta_hat[3] * x2 + e
+  beta_hat[1] + beta_hat[2] * x1 + beta_hat[3] * x2 
 }
-
 #lode the data
 Xi1_values <- c(0, 1)
 Xi2_values <- c(1, 2, 3)
 
+#print the value
+rownames(beta_hat) <- c("beta_one_hat", "beta_two_hat", "beta_three_hat")
+colnames(beta_hat) <- c("beta_hat")
+print(beta_hat)
+
+
+```
+
+```{r Q-2-D-2, echo=FALSE}
 #The data frame
 Q2D_data_frame <- expand.grid(Xi1 = Xi1_values, Xi2 = Xi2_values)
+
 
 # Calculate the conditional expectations everything
 conditional_expectations <- c(
@@ -92,7 +105,7 @@ print(conditional_matrix)
 ```
 
 Q2-E
-```{R Q2-E}
+```{R Q2-E , echo=FALSE}
 #calculate form Q2-a
 #E[Yi|Xi1=0,Xi2=1]
 E01 <- 0.29
@@ -118,23 +131,24 @@ QA_answer <-c(E01, E02, E03, E11, E12, E13)
 comparsing_matrix <- cbind(
   "E[Yi|Xi1=x1,Xi2=x2]_QD" = conditional_expectations,
   "E[Yi|Xi1=x1,Xi2=x2]_QA" = QA_answer,
-  "difference" = conditional_expectations/QA_answer,
+  "difference(QD -QA)" = conditional_expectations-QA_answer,
   Xi1 = c(0, 0, 0, 1, 1, 1),
   Xi2 = c(1, 2, 3, 1, 2, 3)
 )
 
 print(comparsing_matrix )
 ```
-
-
-  The Answer between the part A and part B are not the same same but they are close. Therefore, we can assume the model 0.1 is plausible model.
+This table displays the differences between the sample analogs of the conditional expectations we calculated manually in Question A and those estimated using OLS. The table suggests that there are differences between the two, but with a minor margin. Therefore, I think that model (0.1) is a plausible and correct representation.
+  
 
 Q3-A
-```{r Q3-A}
-#Q3-A##h0 = beta_2 = c versu h1 beta_2 not equal to c#
+```{r Q3-A , echo=FALSE }
 #clean the environment for the the assignment. 
 rm(list = ls())
+
+#set the see
 set.seed(101310927)
+
 #set the variance matrix
 evil_variance_matrix <- matrix(c(1.0964, -0.5313, -0.5730, 
                                  -0.5313, 0.9381, -0.4184,
@@ -159,8 +173,6 @@ beta_true <- c(-0.8, 0, 0, 0.1)
 
 #the t-test with 0.05 degree of freedom (do not change to a you will lost it)
 alpha <- 0.05
-
-
 
 # The storage matrix
   #final_matrix
@@ -246,12 +258,11 @@ legend("top", legend = n_labels, col = colors, lty = 1, lwd = 2)
 
 ```
 
-The power curves suggest that as the number of \(n\) increases, the proportion of the time that the null hypothesis is rejected also increases for different values of \(c\). However, if \(c\) equals the true value of \(\beta_2\), the rejection rate does not go down to zero. This is because there is always a chance of rejecting a true null hypothesis due to random sampling error, especially across multiple samples, which represents the Type I error in hypothesis testing.
-
+This graph shows the proportions of rejections for values of \( c \) moving closer to the true value of \( \\beta_2 = 0 \) across four different sample sizes (\( n \)). We can observe that as \( n \) increases, the proportion of times that the null hypothesis is rejected also increases for different values of \( c \). This may suggests that large number results in a lower chance of making a Type I error, as the law the big number function. The proportion rejected is not zero for any of the four values of \( n \), according to the graph. This indicates that even when the null hypothesis is true, there is always a non-zero chance of rejection due to random sampling variation, which is a Type I error.
 
 
 Q3-B
-```{r}
+```{r, echo=FALSE }
 #clean the environment for the the assignment. 
 rm(list = ls())
 set.seed(101310927)
@@ -301,18 +312,25 @@ Final_matrix <- matrix(0,ncol = length(c_value), nrow = length(n_value))
         
         #take the beta1, beta2 and beta3 out and repute them together. 
         #and I can repose it for the rest of the question 3!
+        #I am so smart!
+    
         beta_one <- simulated_data[, 1]
         beta_two <- simulated_data[, 2]
         beta_three <- simulated_data[, 3]
-        
+      
         #the model 0.4 have intercept, beta_2 and beta_3
         x <- cbind(rep(1, n), simulated_data[, 2], simulated_data[, 3])
         
         # e need to be processed within the loop 
         p <- 3
+        
         e <- rnorm(n, mean = 0, sd = 1)  #normal distribution 
+       #e_token <- e[c(1, 3, 4)] #for the intercept, beta 2 and beta4 
+        
         #now its the time for the calculate the y!
         beta_very_true <- c(-0.8, 0, 0.1)  # As a vector 
+        #I spend two hour for make it look smarter but 
+        #it does not work.
         
         
         y <- x %*% beta_very_true + e
@@ -356,8 +374,9 @@ rownames(Final_matrix) <- c("n = 100", "n = 250", "n = 500", "n = 1000")
 # Colors
 dw_blue <- "#003b6f"  # Doctor Who blue
 cr_red <- "#e91c25"   # Carlton red
-ua_green <- "#007c41"  # ualberta green 
-ua_gold <- "#ffdb05"  # ualberta gold
+cr_black <- "#00000D" # Carleton black (AKA:black)
+ua_green <- "#007c41"  # Ualberta green 
+ua_gold <- "#ffdb05"  # Ualberta gold
     
 # Prepare the data
 n_labels <- c("n = 100", "n = 250", "n = 500", "n = 1000")
@@ -373,16 +392,11 @@ legend("bottomleft", legend = n_labels, col = colors, lty = 1, lwd = 2)
 ```
 
   
-  After removing $\beta_{1}$, where the true $\beta_{1}$ is equal to zero, we observed a significant drop in the proportion of Type I errors, which represent false positives. In the graph for part (a), the proportion of rejections exhibits a smooth decrease as the $c$-value approaches the true $\hat{\beta}_{2}$, indicating a gradual reduction in Type I errors. However, in comparison to part (b), Type I errors occur only when the $c$-value is close to 0.5 for $n = 100$, in contrast to starting at one in the graph for part (a) when $n = 100$.
-
-this happened because, including unnecessary predictors in a statistical model increases the risk of Type I errors due to an increase in model complexity, the multiple comparisons problem, reduced degrees of freedom, and potential multicollinearity. These factors collectively lead to a higher chance of Type I errors.
-
-
-
+  After removing $\beta_{1}$, where the true $\beta_{1}$ is equal to zero, we observed a significant drop in the proportion of Type I errors, which represent false positives. Its also show that while \( n \) increase, the type I errors has been droped, suggest the law of big number In the graph for part (a), the proportion of rejections exhibits a smooth decrease as the $c$-value approaches the true $\hat{\beta}_{2}$, indicating a gradual reduction in Type I errors. However, in comparison to part (b), Type I errors occur only when the $c$-value is close to 0.5 for $n = 100$, in contrast to starting at one in the graph for part (a) when $n = 100$. this happened because, including unnecessary predictors in a statistical model increases the risk of Type I and Type II errors due to an increase in model complexity.
 
 
 Q3-C
-```{r Q3-C}
+```{r Q3-C , echo=FALSE }
 #clean the environment for the the assignment. 
 rm(list = ls())
 set.seed(101310927)
@@ -529,38 +543,55 @@ With the increase of the sample size \( n \), the joint probability of failing t
 
 
 Q3-D
-I will using the example of Q3-A and A3-B to aruge with my boss that including an eredundant explanatory variable within the regression model will increase the posibility of the type one error and decreasing the model's proference. 
+I will using the example of Q3-A and A3-B to aruge with my boss that including an eredundant explanatory variable within the regression model will only increase the posibility of the type one error with a decreasing proference of the model. 
 
 
 Q3-E
 
-The significance of the main variable \(M_i\) might change after we remove a less important variable \(W_i\). This can happen for a few reasons that we should think about carefully. First, \(W_i\) could be a control variable. Removing it might make \(M_i\) seem more important than it really is. Also, just because \(W_i\) doesn't seem important at first doesn't mean it has no value in explaining \(M_i\). It's possible that \(W_i\) and the outcome have a non-linear relationship that our model doesn't pick up. To better understand how variables like \(M_i\) and \(W_i\) relate, we might want to try other methods like best subset selection or use lasso or ridge regression to decide if a variable should be included.
+The significance of the main variable \(M_i\) might change after we remove a less important variable \(W_i\). This can happen for a few reasons that we should carefully think about it. First, \(W_i\) could be a control variable. Removing it might make \(M_i\) seem more important than it really is. Also, just because \(W_i\) doesn't seem important at first doesn't mean it has no value in explaining \(M_i\). It's possible that \(W_i\) and the outcome have a non-linear relationship that our model i doesn't pick up. To better understand how variables like \(M_i\) and \(W_i\) relate, we might want to try other methods like best subset selection or use lasso or ridge regression to decide if a variable should be included.
 
 
-Q-A-i
+Q4-A
 
-% Simplified explanation in academic LaTeX format
+Q4-A-I
 
-By definition, the independence between the error term \(e_i\) and an explanatory variable \(x_{ij}\) implies that the expected value of their product is zero, i.e., \(E[e_i x_{ij}] = 0\). When \(\Delta = 0\), it suggests that there is no direct dependence or correlation between \(x_{i4}\) and \(e_i\), upholding the assumption of independence between the error terms and the explanatory variables. Consequently, under the premise that \(\Delta = 0\), \(x_{i4}\) and \(e_i\) are independent, leading to \(E[e_i x_{ij}] = 0\) for all \(i\), \(j\).
+\[
+\text{Use the law of iterated expectations}
+\]
 
-To demonstrate that this condition holds if and only if \(\Delta = 0\), we further argue that if \(\Delta \neq 0\), then a dependence exists between \(x_{i4}\) and \(e_i\), breaching the independence assumption. As a result, \(E[e_i x_{i4}]\) would not equal zero.
+\begin{align*} 
+E[\epsilon_i x_i] &= E[E[\epsilon_i x_i | x_i]] \\
+&= E[E[\epsilon_i | x_i] \cdot x_i] \\
+&= E[\delta \cdot x_i] \\
+\end{align*}
+
+If \( \delta = 0 \), then: 
+
+\begin{align*}
+E[\delta \cdot x_i] &= E[0 \cdot x_i] \\
+                    &= 0
+\end{align*}
+$\therefore$ if \( E[\epsilon_i x_i] = 0 \), then \( E[\delta \cdot x_i] = 0 \). For the exception to be zero.
+$\therefore$ we can concluded that \[ E[\epsilon_i x_i] = 0 \quad \text{if and only if} \quad \delta = 0\]
+
+Q4-A-ii
+We start with the law of iterated expectations.
+
+If \( \delta \neq 0 \), then:
+\begin{align*}
+E[\epsilon_i x_i] &= E_x[E[\epsilon_i x_i | x_i]] \\
+                  &= E[E[\epsilon_i | x_i] \cdot x_i] \\
+                  &= E[\delta \cdot x_i]
+\end{align*}
+
+Therefore, \( E[\epsilon_i | x_i] \) is not zero if \( \delta \) is not zero, menans that:
+\[
+E[\epsilon_i | x_i] \neq 0
+\]
 
 
-
-```{r}
-#4-a-ii
-
-
-
-#begining by simulating data for a multivarite regression model with
-#homoscedastic error
-    
-
-```
-
-
-4-aa
-```{r}
+4-a
+```{r, echo=FALSE }
 #clean the enviroment for thies question
 rm(list = ls())
 library(MASS)
@@ -627,7 +658,7 @@ hist(boots_matriex, main = "Bootstrap Distribution of Beta_1", xlab = "Beta_1 Es
 ```
 
 Q-4-B
-```{R}
+```{R, echo=FALSE}
 
 #clean the enviroment for thies question
 rm(list = ls())
@@ -640,7 +671,7 @@ set.seed(10086)
 n <- 10000
 B <- 999
 
-#vector of mean
+#mu
 mu <- c(-0.22, 0.41, -1.56, 1.13, 0.82)
 
 #covariance matrix
@@ -679,7 +710,7 @@ for (b in 1:B) {
   boot_sample <- sample(n, n, replace = TRUE)
   
   #resample the x and y
-  x_boot <- x[boot_sample, ]
+  x_boot <- x[boot_sample,]
   y_boot <- y[boot_sample]
   
   #compute the beta_hat
@@ -689,22 +720,28 @@ for (b in 1:B) {
   boots_matriex[b] <- beta_hat_boot[2]
 }
 
+#calculate the precentile of hteboots strap estimates.
+q_25 <- quantile(boots_matriex, probs = 0.025)
+q_975 <- quantile(boots_matriex, probs = 0.975)
 
-# Calculate the 2.5th and 97.5th percentiles of the bootstrap estimates
-q_0.025 <- quantile(boots_matriex, probs = 0.025)
-q_0.975 <- quantile(boots_matriex, probs = 0.975)
+#
+#confidence interval
+Q4B_bootstrap_confi_interval <- c(q_25, q_975)
 
-# Construct the bootstrap confidence interval
-bootstrap_conf_interval <- c(q_0.025, q_0.975)
-
-# Estimate the standard error from the bootstrap estimates
+#calculate the standard error
 std_error <- sd(boots_matriex)
 
-# Construct the "theoretical" confidence interval using the normal approximation
-# Assuming beta_hat[2] is the original estimate of beta_1
-theoretical_conf_interval <- beta_hat[2] + c(-1.96, 1.96) * std_error
 
-# Report both intervals
-bootstrap_conf_interval
-theoretical_conf_interval
+Q4B_theoretical_confi_interval <- beta_hat[2] + c(-1.96, 1.96) * std_error
+
+#put together
+confidence_intervals_matrix <- rbind(Q4B_bootstrap_confi_interval, Q4B_theoretical_confi_interval)
+#rename the matirx
+rownames(confidence_intervals_matrix) <- c("Bootstrap CI", "Theoretical CI")
+#print the matrix 
+print(confidence_intervals_matrix)
+
 ```
+
+The output suggests that the confidence intervals are close between the Bootstrap and theoretical methods, meaning there is a robust estimate for beta_one in the linear regression model. Furthermore, it means that the true value is likely within the shared interval.
+
