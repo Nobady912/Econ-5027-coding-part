@@ -19,7 +19,7 @@ setwd("~/Documents/GitHub/Econ-5027-coding-part")
 #Lode the all package that necessary.
 #some of the packages may not been used in this homework.
 #I just copy it around
-library("MASS") d
+library("MASS") 
 library("ggplot2")
 ```
 
@@ -41,7 +41,7 @@ evil_variance_matrix <- matrix(c(1.0964, -0.5313, -0.5730,
 mu <- c(1.1141, -0.6768, 3.3521)
 
 # c sequence (from -1 to 1 by 0.1)
-c_value <- seq(from = -1, to = 1, by = 0.1)
+c_value <- seq(from = -1, to = 1, by = 0.05)
 
 # Number of simulation rounds
 R <- 1000

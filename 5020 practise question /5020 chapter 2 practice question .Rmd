@@ -1,0 +1,147 @@
+---
+title: "5020 pratice quesiton"
+author: "Tie Ma"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+---
+title: "The practise question for chapter 2"
+author: "Tie Ma"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+\textbf{2.5} Consider the solution, \( e(p, u) = u^{\alpha_1} p_1^{\alpha_2} p_2^{\alpha_3} \) at the end of Example 2.3.
+\begin{enumerate}
+    \item[(a)] Derive the indirect utility function through the relation \( e(p, v(p, y)) = y \) and verify Roy's identity.
+    \item[(b)] Use the construction given in the proof of Theorem 2.1 to recover a utility function generating \( e(p, u) \). Show that the utility function you derive generates the demand functions given in Example 2.3.
+\end{enumerate}
+
+
+\textbf{2.8} The consumer buys bundle \(x^i\) at prices \(p^i\), \(i = 0, 1\). Separately for parts (a) to (d), state whether these indicated choices satisfy WARP:
+\begin{enumerate}
+    \item[(a)] \(p^0 = (1, 3)\), \(x^0 = (4, 2)\); \(p^1 = (3, 5)\), \(x^1 = (3, 1)\).
+    \item[(b)] \(p^0 = (1, 6)\), \(x^0 = (10, 5)\); \(p^1 = (3, 5)\), \(x^1 = (8, 4)\).
+    \item[(c)] \(p^0 = (1, 2)\), \(x^0 = (3, 1)\); \(p^1 = (2, 2)\), \(x^1 = (1, 2)\).
+    \item[(d)] \(p^0 = (2, 6)\), \(x^0 = (20, 10)\); \(p^1 = (3, 5)\), \(x^1 = (18, 4)\).
+\end{enumerate}
+
+#####
+\textbf{2.10 Hicks (1956)} offered the following example to demonstrate how WARP can fail to result in transitive revealed preferences when there are more than two goods. The consumer chooses bundle \( x^i \) at prices \( p^i \), \( i = 0, 1, 2 \), where
+
+\[
+p^0 = \begin{pmatrix}
+1 \\
+1 \\
+2
+\end{pmatrix},
+x^0 = \begin{pmatrix}
+5 \\
+19 \\
+9
+\end{pmatrix},
+p^1 = \begin{pmatrix}
+1 \\
+1 \\
+1
+\end{pmatrix},
+x^1 = \begin{pmatrix}
+12 \\
+12 \\
+12
+\end{pmatrix},
+p^2 = \begin{pmatrix}
+1 \\
+2 \\
+1
+\end{pmatrix},
+x^2 = \begin{pmatrix}
+27 \\
+11 \\
+1
+\end{pmatrix}.
+\]
+
+\begin{enumerate}
+    \item[(a)] Show that these data satisfy WARP. Do it by considering all possible pairwise comparisons of the bundles and showing that in each case, one bundle in the pair is revealed preferred to the other.
+    \item[(b)] Find the intransitivity in the revealed preferences.
+\end{enumerate}
+
+
+\textbf{2.24}Reconsider Example 2.7 and show that the individual will insure less than fully if the price per unit of insurance, $\rho$, exceeds the probability of incurring an accident, $\alpha$.
+
+
+\textbf{EXAMPLE 2.7} A risk-averse individual with initial wealth \( w_0 \) and VNM utility function \( u(\cdot) \) must decide whether and for how much to insure his car. The probability that he will have an accident and incur a dollar loss of \( L \) in damages is \( \alpha \) where \( \alpha \in (0, 1) \). How much insurance, \( x \), should he purchase?
+
+Of course, the answer depends on the price at which insurance is available. Let us suppose that insurance is available at an actuarially fair price, i.e., one that yields insurance companies zero expected profits. Now, if \( \rho \) denotes the rate at which each dollar of insurance can be purchased, the insurance company’s expected profits per dollar of insurance sold (assuming zero costs) will be \( \alpha(\rho - 1) + (1 - \alpha)\rho \). Setting this equal to zero implies that \( \rho = \alpha \).
+
+
+
+
+\textbf{2.25} Consider the quadratic VNM utility function \( U(w) = a + bw + cw^2 \).
+\begin{enumerate}
+    \item[(a)] What restrictions if any must be placed on parameters \( a \), \( b \), and \( c \) for this function to display risk aversion?
+    \item[(b)] Over what domain of wealth can a quadratic VNM utility function be defined?
+    \item[(c)] Given the gamble
+    \[
+    g = \left(\frac{1}{2}\right) \circ (w + h), \left(\frac{1}{2}\right) \circ (w - h),
+    \]
+    show that \( CE < E(g) \) and that \( P > 0 \).
+    \item[(d)] Show that this function, satisfying the restrictions in part (a), \textit{cannot} represent preferences that display \textit{decreasing absolute risk aversion}.
+\end{enumerate}
+
+
+\textbf{2.27} Show that for \( \beta > 0 \), the VNM utility function \( u(w) = \alpha + \beta \ln(w) \) displays decreasing absolute risk aversion.
+
+\textbf{2.28} Let \( u(x_1, x_2) = \ln(x_1) + 2 \ln(x_2) \). If \( p_1 = p_2 = 1 \), will this person be risk loving, risk neutral, or risk averse when offered gambles over different amounts of income?
+
+\textbf{2.29} Using the definitions of risk aversion, certainty equivalent, and risk premium, prove that \( CE < E(g) \) (or \( P > 0 \)) for all \( g \in G \) is necessary and sufficient for risk aversion.
+
+\textbf{2.30} Prove that an individual is risk neutral if and only if each of the following is satisfied:
+\begin{enumerate}
+    \item The VNM utility function is linear in wealth.
+    \item \( C = E(g) \) for all \( g \in G \).
+    \item \( P = 0 \) for all \( g \in G \).
+\end{enumerate}
+What are the three equivalent necessary and sufficient conditions for risk loving?
+
+\textbf{2.31} Prove that for any VNM utility function, the condition \( u''(w) > 0 \) is necessary but not sufficient for DARA.
+
+
+\textbf{2.35} An investor must decide how much of initial wealth \( w \) to allocate to a risky asset with unknown rate of return \( r \), where each outcome \( r_i \) occurs with probability \( p_i \), \( i = 1, \ldots, n \). Using the framework of Example 2.6, prove that if the investor’s preferences display increasing absolute risk aversion, the risky asset must be an ‘inferior’ good.
+
+
+######
+\textbf{2.37}
+An infinitely lived agent must choose his lifetime consumption plan. Let \( x_t \) denote consumption spending in period \( t \), \( y_t \) denote income expected in period \( t \), and \( r > 0 \), the market rate of interest at which the agent can freely borrow or lend. The agent’s intertemporal utility function takes the additively separable form
+
+\[
+u^*(x_0, x_1, x_2, \ldots) = \sum_{t=0}^{\infty} \beta^t u(x_t),
+\]
+
+where \( u(x) \) is increasing and strictly concave, and \( 0 < \beta < 1 \). The intertemporal budget constraint requires that the present value of expenditures not exceed the present value of income:
+
+\[
+\sum_{t=0}^{\infty} \left( \frac{1}{1 + r} \right)^t x_t \leq \sum_{t=0}^{\infty} \left( \frac{1}{1 + r} \right)^t y_t.
+\]
+
+\begin{enumerate}
+\item What interpretation can you give to parameter \( \beta \)?
+\item Write down the first-order conditions for optimal choice of consumption in period \( t \).
+\item Assuming that consumption in all other periods remains constant, sketch an indifference curve showing the intertemporal trade-off between \( x_t \) and \( x_{t+1} \) alone. Carefully justify the slope and curvature you have depicted.
+\item How does consumption in period \( t \) vary with the market interest rate?
+\item Show that lifetime utility will always increase with an income increase in any period.
+\item If \( \beta = \frac{1}{1 + r} \), what is the consumption plan of the agent?
+\item Describe the agent’s consumption plan if \( \beta > \frac{1}{1 + r} \) and if \( \beta < \frac{1}{1 + r} \).
+\end{enumerate}
+
+
+#######
+\
+
+#######
+
+
